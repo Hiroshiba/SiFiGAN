@@ -19,8 +19,9 @@ import numpy as np
 from hydra.utils import to_absolute_path
 from joblib import dump, load
 from omegaconf import DictConfig, OmegaConf
-from sifigan.utils import read_hdf5, read_txt
 from sklearn.preprocessing import StandardScaler
+
+from sifigan.utils import read_hdf5, read_txt
 
 # A logger for this file
 logger = getLogger(__name__)
@@ -76,4 +77,5 @@ def main(config: DictConfig):
 
 
 if __name__ == "__main__":
+    main()
     main()

@@ -16,6 +16,7 @@ from logging import getLogger
 
 import torch
 import torch.nn as nn
+
 from sifigan.layers import Snake
 from sifigan.utils import index_initial, pd_indexing
 
@@ -106,7 +107,9 @@ class ResidualBlock(nn.Module):
             if nonlinear_activation == "Snake":
                 nonlinear = Snake(channels, **nonlinear_activation_params)
             else:
-                nonlinear = getattr(nn, nonlinear_activation)(**nonlinear_activation_params)
+                nonlinear = getattr(nn, nonlinear_activation)(
+                    **nonlinear_activation_params
+                )
             self.convs1 += [
                 nn.Sequential(
                     nonlinear,
@@ -124,7 +127,9 @@ class ResidualBlock(nn.Module):
                 if nonlinear_activation == "Snake":
                     nonlinear = Snake(channels, **nonlinear_activation_params)
                 else:
-                    nonlinear = getattr(nn, nonlinear_activation)(**nonlinear_activation_params)
+                    nonlinear = getattr(nn, nonlinear_activation)(
+                        **nonlinear_activation_params
+                    )
                 self.convs2 += [
                     nn.Sequential(
                         nonlinear,
@@ -195,7 +200,9 @@ class AdaptiveResidualBlock(nn.Module):
             if nonlinear_activation == "Snake":
                 self.nonlinears += [Snake(channels, **nonlinear_activation_params)]
             else:
-                self.nonlinears += [getattr(nn, nonlinear_activation)(**nonlinear_activation_params)]
+                self.nonlinears += [
+                    getattr(nn, nonlinear_activation)(**nonlinear_activation_params)
+                ]
             self.convsC += [
                 Conv1d1x1(
                     channels,
@@ -221,7 +228,9 @@ class AdaptiveResidualBlock(nn.Module):
                 if nonlinear_activation == "Snake":
                     nonlinear = Snake(channels, **nonlinear_activation_params)
                 else:
-                    nonlinear = getattr(nn, nonlinear_activation)(**nonlinear_activation_params)
+                    nonlinear = getattr(nn, nonlinear_activation)(
+                        **nonlinear_activation_params
+                    )
                 self.convsA += [
                     nn.Sequential(
                         nonlinear,
@@ -255,4 +264,5 @@ class AdaptiveResidualBlock(nn.Module):
             if self.use_additional_convs:
                 xt = self.convsA[i](xt)
             x = xt + x
+        return x
         return x

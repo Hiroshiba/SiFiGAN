@@ -5,11 +5,12 @@
 
 """Source regularization loss modules."""
 
-import sifigan.losses
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from librosa.filters import mel as librosa_mel
+
+import sifigan.losses
 from sifigan.layers import CheapTrick
 
 
@@ -124,7 +125,9 @@ class ResidualLoss(nn.Module):
         self.n_mels = n_mels
         self.fmin = fmin
         self.fmax = fmax if fmax is not None else sample_rate / 2
-        melmat = librosa_mel(sr=sample_rate, n_fft=fft_size, n_mels=n_mels, fmin=fmin, fmax=self.fmax).T
+        melmat = librosa_mel(
+            sr=sample_rate, n_fft=fft_size, n_mels=n_mels, fmin=fmin, fmax=self.fmax
+        ).T
         self.register_buffer("melmat", torch.from_numpy(melmat).float())
 
         self.power = power
@@ -193,4 +196,5 @@ class ResidualLoss(nn.Module):
 
         loss = F.l1_loss(s, t.detach())
 
+        return loss
         return loss

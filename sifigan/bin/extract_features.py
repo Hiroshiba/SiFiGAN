@@ -29,6 +29,7 @@ from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, OmegaConf
 from scipy.interpolate import interp1d
 from scipy.signal import firwin, lfilter
+
 from sifigan.utils import read_txt, write_hdf5
 
 # A logger for this file
@@ -397,4 +398,5 @@ def main(config: DictConfig):
 
 
 if __name__ == "__main__":
+    main()
     main()

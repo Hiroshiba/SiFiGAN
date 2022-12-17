@@ -19,8 +19,9 @@ import numpy as np
 import soundfile as sf
 from hydra.utils import to_absolute_path
 from joblib import load
-from sifigan.utils import check_filename, read_hdf5, read_txt, validate_length
 from torch.utils.data import Dataset
+
+from sifigan.utils import check_filename, read_hdf5, read_txt, validate_length
 
 # A logger for this file
 logger = getLogger(__name__)
@@ -310,4 +311,5 @@ class FeatDataset(Dataset):
             int: The length of dataset.
 
         """
+        return len(self.feat_files)
         return len(self.feat_files)

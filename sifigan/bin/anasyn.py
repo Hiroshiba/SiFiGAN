@@ -26,6 +26,7 @@ from hydra.utils import instantiate, to_absolute_path
 from joblib import load
 from omegaconf import DictConfig
 from scipy.interpolate import interp1d
+
 from sifigan.utils.features import SignalGenerator, dilated_factor
 
 logger = getLogger(__name__)
@@ -83,7 +84,9 @@ def main(config: DictConfig) -> None:
 
     # load pre-trained model from checkpoint file
     model = instantiate(config.generator)
-    state_dict = torch.load(to_absolute_path(config.checkpoint_path), map_location="cpu")
+    state_dict = torch.load(
+        to_absolute_path(config.checkpoint_path), map_location="cpu"
+    )
     model.load_state_dict(state_dict["model"]["generator"])
     logger.info(f"Loaded model parameters from {config.checkpoint_path}.")
     model.remove_weight_norm()
@@ -172,7 +175,9 @@ def main(config: DictConfig) -> None:
             f0 = torch.FloatTensor(f0).view(1, 1, -1).to(device)
             cf0 = torch.FloatTensor(cf0).view(1, 1, -1).to(device)
             c = torch.FloatTensor(c).unsqueeze(0).transpose(2, 1).to(device)
-            dfs = [torch.FloatTensor(np.array(df)).view(1, 1, -1).to(device) for df in dfs]
+            dfs = [
+                torch.FloatTensor(np.array(df)).view(1, 1, -1).to(device) for df in dfs
+            ]
 
             # generate input signals
             if config.sine_f0_type == "cf0":
@@ -184,7 +189,9 @@ def main(config: DictConfig) -> None:
             y = model(in_signal, c, dfs)[0]
 
             # save output signal as PCM 16 bit wav file
-            out_path = os.path.join(config.out_dir, wav_file).replace(".wav", f"_{f0_factor:.2f}.wav")
+            out_path = os.path.join(config.out_dir, wav_file).replace(
+                ".wav", f"_{f0_factor:.2f}.wav"
+            )
             sf.write(
                 to_absolute_path(out_path),
                 y.view(-1).cpu().numpy(),
@@ -194,4 +201,5 @@ def main(config: DictConfig) -> None:
 
 
 if __name__ == "__main__":
+    main()
     main()

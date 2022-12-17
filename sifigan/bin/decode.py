@@ -21,9 +21,10 @@ import soundfile as sf
 import torch
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig
+from tqdm import tqdm
+
 from sifigan.datasets import FeatDataset
 from sifigan.utils import SignalGenerator, dilated_factor
-from tqdm import tqdm
 
 # A logger for this file
 logger = getLogger(__name__)
@@ -59,7 +60,9 @@ def main(config: DictConfig) -> None:
     model.eval().to(device)
 
     # check directory existence
-    out_dir = to_absolute_path(os.path.join(config.out_dir, "wav", str(config.checkpoint_steps)))
+    out_dir = to_absolute_path(
+        os.path.join(config.out_dir, "wav", str(config.checkpoint_steps))
+    )
     os.makedirs(out_dir, exist_ok=True)
 
     total_rtf = 0.0
@@ -94,12 +97,17 @@ def main(config: DictConfig) -> None:
                     dfs += [
                         np.repeat(dilated_factor(cf0, config.data.sample_rate, df), us)
                         if config.data.df_f0_type == "cf0"
-                        else np.repeat(dilated_factor(f0, config.data.sample_rate, df), us)
+                        else np.repeat(
+                            dilated_factor(f0, config.data.sample_rate, df), us
+                        )
                     ]
                 c = torch.FloatTensor(c).unsqueeze(0).transpose(2, 1).to(device)
                 f0 = torch.FloatTensor(f0).view(1, 1, -1).to(device)
                 cf0 = torch.FloatTensor(cf0).view(1, 1, -1).to(device)
-                dfs = [torch.FloatTensor(np.array(df)).view(1, 1, -1).to(device) for df in dfs]
+                dfs = [
+                    torch.FloatTensor(np.array(df)).view(1, 1, -1).to(device)
+                    for df in dfs
+                ]
                 if config.data.sine_f0_type == "cf0":
                     in_signal = signal_generator(cf0)
                 elif config.data.sine_f0_type == "f0":
@@ -127,8 +135,11 @@ def main(config: DictConfig) -> None:
                     sf.write(save_path, s, config.data.sample_rate, "PCM_16")
 
             # report average RTF
-            logger.info(f"Finished generation of {idx} utterances (RTF = {total_rtf / idx:.4f}).")
+            logger.info(
+                f"Finished generation of {idx} utterances (RTF = {total_rtf / idx:.4f})."
+            )
 
 
 if __name__ == "__main__":
+    main()
     main()

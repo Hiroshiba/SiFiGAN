@@ -19,17 +19,18 @@ import hydra
 import librosa.display
 import matplotlib
 import numpy as np
-import sifigan
-import sifigan.models
 import torch
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, OmegaConf
-from sifigan.datasets import AudioFeatDataset
-from sifigan.utils import dilated_factor
-from sifigan.utils.features import SignalGenerator
 from tensorboardX import SummaryWriter
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+
+import sifigan
+import sifigan.models
+from sifigan.datasets import AudioFeatDataset
+from sifigan.utils import dilated_factor
+from sifigan.utils.features import SignalGenerator
 
 # set to avoid matplotlib error in CLI environment
 matplotlib.use("Agg")
@@ -776,4 +777,5 @@ def main(config: DictConfig) -> None:
 
 
 if __name__ == "__main__":
+    main()
     main()

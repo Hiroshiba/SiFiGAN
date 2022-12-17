@@ -16,6 +16,7 @@ from logging import getLogger
 
 import torch
 import torch.nn as nn
+
 from sifigan.layers import AdaptiveResidualBlock, Conv1d, ResidualBlock
 
 # A logger for this file
@@ -98,7 +99,7 @@ class HiFiGANGenerator(nn.Module):
                 nn.Sequential(
                     getattr(nn, nonlinear_activation)(**nonlinear_activation_params),
                     nn.ConvTranspose1d(
-                        channels // (2 ** i),
+                        channels // (2**i),
                         channels // (2 ** (i + 1)),
                         upsample_kernel_sizes[i],
                         upsample_scales[i],
@@ -160,13 +161,16 @@ class HiFiGANGenerator(nn.Module):
                     nn.Sequential(
                         nn.Conv1d(
                             channels // (2 ** (i + 1)),
-                            channels // (2 ** i),
+                            channels // (2**i),
                             upsample_kernel_sizes[i],
                             upsample_scales[i],
-                            padding=upsample_scales[i] - (upsample_kernel_sizes[i] % 2 == 0),
+                            padding=upsample_scales[i]
+                            - (upsample_kernel_sizes[i] % 2 == 0),
                             bias=bias,
                         ),
-                        getattr(nn, nonlinear_activation)(**nonlinear_activation_params),
+                        getattr(nn, nonlinear_activation)(
+                            **nonlinear_activation_params
+                        ),
                     )
                 ]
 
@@ -328,7 +332,7 @@ class SiFiGANGenerator(nn.Module):
                 nn.Sequential(
                     getattr(nn, nonlinear_activation)(**nonlinear_activation_params),
                     nn.ConvTranspose1d(
-                        channels // (2 ** i),
+                        channels // (2**i),
                         channels // (2 ** (i + 1)),
                         upsample_kernel_sizes[i],
                         upsample_scales[i],
@@ -341,9 +345,11 @@ class SiFiGANGenerator(nn.Module):
             if not share_upsamples:
                 self.fn["upsamples"] += [
                     nn.Sequential(
-                        getattr(nn, nonlinear_activation)(**nonlinear_activation_params),
+                        getattr(nn, nonlinear_activation)(
+                            **nonlinear_activation_params
+                        ),
                         nn.ConvTranspose1d(
-                            channels // (2 ** i),
+                            channels // (2**i),
                             channels // (2 ** (i + 1)),
                             upsample_kernel_sizes[i],
                             upsample_scales[i],
@@ -371,7 +377,9 @@ class SiFiGANGenerator(nn.Module):
                         channels=channels // (2 ** (i + 1)),
                         dilations=filter_network_params["resblock_dilations"][j],
                         bias=bias,
-                        use_additional_convs=filter_network_params["use_additional_convs"],
+                        use_additional_convs=filter_network_params[
+                            "use_additional_convs"
+                        ],
                         nonlinear_activation=nonlinear_activation,
                         nonlinear_activation_params=nonlinear_activation_params,
                     )
@@ -413,10 +421,11 @@ class SiFiGANGenerator(nn.Module):
                 nn.Sequential(
                     nn.Conv1d(
                         channels // (2 ** (i + 1)),
-                        channels // (2 ** i),
+                        channels // (2**i),
                         upsample_kernel_sizes[i],
                         upsample_scales[i],
-                        padding=upsample_scales[i] - (upsample_kernel_sizes[i] % 2 == 0),
+                        padding=upsample_scales[i]
+                        - (upsample_kernel_sizes[i] % 2 == 0),
                         bias=bias,
                     ),
                     getattr(nn, nonlinear_activation)(**nonlinear_activation_params),
@@ -429,13 +438,16 @@ class SiFiGANGenerator(nn.Module):
                     nn.Sequential(
                         nn.Conv1d(
                             channels // (2 ** (i + 1)),
-                            channels // (2 ** i),
+                            channels // (2**i),
                             upsample_kernel_sizes[i],
                             upsample_scales[i],
-                            padding=upsample_scales[i] - (upsample_kernel_sizes[i] % 2 == 0),
+                            padding=upsample_scales[i]
+                            - (upsample_kernel_sizes[i] % 2 == 0),
                             bias=bias,
                         ),
-                        getattr(nn, nonlinear_activation)(**nonlinear_activation_params),
+                        getattr(nn, nonlinear_activation)(
+                            **nonlinear_activation_params
+                        ),
                     )
                 ]
 
@@ -611,7 +623,7 @@ class SiFiGANDirectGenerator(nn.Module):
                 nn.Sequential(
                     getattr(nn, nonlinear_activation)(**nonlinear_activation_params),
                     nn.ConvTranspose1d(
-                        channels // (2 ** i),
+                        channels // (2**i),
                         channels // (2 ** (i + 1)),
                         upsample_kernel_sizes[i],
                         upsample_scales[i],
@@ -624,9 +636,11 @@ class SiFiGANDirectGenerator(nn.Module):
             if not share_upsamples:
                 self.fn["upsamples"] += [
                     nn.Sequential(
-                        getattr(nn, nonlinear_activation)(**nonlinear_activation_params),
+                        getattr(nn, nonlinear_activation)(
+                            **nonlinear_activation_params
+                        ),
                         nn.ConvTranspose1d(
-                            channels // (2 ** i),
+                            channels // (2**i),
                             channels // (2 ** (i + 1)),
                             upsample_kernel_sizes[i],
                             upsample_scales[i],
@@ -654,7 +668,9 @@ class SiFiGANDirectGenerator(nn.Module):
                         channels=channels // (2 ** (i + 1)),
                         dilations=filter_network_params["resblock_dilations"][j],
                         bias=bias,
-                        use_additional_convs=filter_network_params["use_additional_convs"],
+                        use_additional_convs=filter_network_params[
+                            "use_additional_convs"
+                        ],
                         nonlinear_activation=nonlinear_activation,
                         nonlinear_activation_params=nonlinear_activation_params,
                     )
@@ -696,10 +712,11 @@ class SiFiGANDirectGenerator(nn.Module):
                 nn.Sequential(
                     nn.Conv1d(
                         channels // (2 ** (i + 1)),
-                        channels // (2 ** i),
+                        channels // (2**i),
                         upsample_kernel_sizes[i],
                         upsample_scales[i],
-                        padding=upsample_scales[i] - (upsample_kernel_sizes[i] % 2 == 0),
+                        padding=upsample_scales[i]
+                        - (upsample_kernel_sizes[i] % 2 == 0),
                         bias=bias,
                     ),
                     getattr(nn, nonlinear_activation)(**nonlinear_activation_params),
@@ -794,4 +811,5 @@ class SiFiGANDirectGenerator(nn.Module):
                 nn.utils.weight_norm(m)
                 logger.debug(f"Weight norm is applied to {m}.")
 
+        self.apply(_apply_weight_norm)
         self.apply(_apply_weight_norm)
